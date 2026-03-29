@@ -2,14 +2,30 @@ import { Trash2Icon } from "lucide-react";
 import { cx } from "../../lib/cx.ts";
 import styles from "./insights.module.css";
 import type { Insight } from "../../schemas/insight.ts";
+import { BRANDS } from "../../lib/consts.ts";
 
 type InsightsProps = {
   insights: Insight[];
+  removeInsight: (insight: number) => void;
   className?: string;
 };
 
-export const Insights = ({ insights, className }: InsightsProps) => {
-  const deleteInsight = () => undefined;
+const getBrandName = (id: number) => BRANDS.find((i) => i.id === id)?.name;
+
+export const Insights = (
+  { insights, removeInsight, className }: InsightsProps,
+) => {
+  const deleteInsight = (id: number) => {
+    fetch(`/api/insights/${id}`, { method: "DELETE" })
+      .then((res) => {
+        if (res.ok) {
+          removeInsight(id);
+        }
+      })
+      .catch(() => {
+        console.error("Failed to delete insight with id", id);
+      });
+  };
 
   return (
     <div className={cx(className)}>
@@ -20,12 +36,13 @@ export const Insights = ({ insights, className }: InsightsProps) => {
             insights.map(({ id, text, createdAt, brand }) => (
               <div className={styles.insight} key={id}>
                 <div className={styles["insight-meta"]}>
-                  <span>{brand}</span>
+                  <span>{getBrandName(brand)}</span>
                   <div className={styles["insight-meta-details"]}>
                     <span>{createdAt.toString()}</span>
                     <Trash2Icon
                       className={styles["insight-delete"]}
-                      onClick={deleteInsight}
+                      onClick={() =>
+                        deleteInsight(id)}
                     />
                   </div>
                 </div>

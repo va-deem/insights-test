@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Header } from "../components/header/header.tsx";
 import { Insights } from "../components/insights/insights.tsx";
 import styles from "./app.module.css";
-import type { Insight } from "../schemas/insight.ts";
+import { Insight } from "../schemas/insight.ts";
 
 export const App = () => {
   const [insights, setInsights] = useState<Insight[]>([]);
@@ -11,14 +11,27 @@ export const App = () => {
     fetch(`/api/insights`)
       .then((res) => res.json())
       .then((res) => {
-        setInsights(res);
-      });
+        console.log("Fetched insights:", res);
+        setInsights(res.map((item: unknown) => Insight.parse(item)));
+      })
+      .catch((err) => console.error(err));
   }, []);
+
+  const addNewInsight = (newInsight: Insight) => {
+    setInsights((prev) => [...prev, newInsight]);
+  };
+  const removeInsight = (id: Insight["id"]) => {
+    setInsights((prev) => prev.filter((i) => i.id !== id));
+  };
 
   return (
     <main className={styles.main}>
-      <Header />
-      <Insights className={styles.insights} insights={insights} />
+      <Header addNewInsight={addNewInsight} />
+      <Insights
+        className={styles.insights}
+        insights={insights}
+        removeInsight={removeInsight}
+      />
     </main>
   );
 };
