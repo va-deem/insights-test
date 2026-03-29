@@ -14,7 +14,9 @@ export const AddInsight = (props: AddInsightProps) => {
       <form className={styles.form} onSubmit={addInsight}>
         <label className={styles.field}>
           <select className={styles["field-input"]}>
-            {BRANDS.map(({ id, name }) => <option value={id}>{name}</option>)}
+            {BRANDS.map(({ id, name }) => (
+              <option value={id} key={id}>{name}</option>
+            ))}
           </select>
         </label>
         <label className={styles.field}>
