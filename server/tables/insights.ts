@@ -20,5 +20,7 @@ export type Insert = {
   text: string;
 };
 
+// WARNING: Uses string interpolation, not parameterized queries (SQL injection risk).
+// Acceptable here as it's only used in tests with controlled input.
 export const insertStatement = (item: Insert) =>
   `INSERT INTO insights (brand, createdAt, text) VALUES (${item.brand}, '${item.createdAt}', '${item.text}')`;
