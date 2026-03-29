@@ -30,7 +30,7 @@
     "jsr:@std/path@^1.0.8": "1.0.8",
     "jsr:@std/testing@*": "1.0.9",
     "jsr:@std/testing@^1.0.5": "1.0.9",
-    "npm:@deno/vite-plugin@^1.0.2": "1.0.2_vite@6.0.3",
+    "npm:@deno/vite-plugin@^1.0.6": "1.0.6_vite@6.0.3",
     "npm:@fontsource-variable/quicksand@^5.1.0": "5.1.0",
     "npm:@testing-library/dom@^10.4.0": "10.4.0",
     "npm:@testing-library/jest-dom@^6.6.3": "6.6.3",
@@ -334,8 +334,8 @@
         "@babel/helper-validator-identifier"
       ]
     },
-    "@deno/vite-plugin@1.0.2_vite@6.0.3": {
-      "integrity": "sha512-ZaC5W1yCb1xdRURU5qHFHrxZABr1tC68tS73/YhXUUbe9nuytCV4CG/dpLxMkxS64Fs3YwcqEz2k1eAqE9W5SQ==",
+    "@deno/vite-plugin@1.0.6_vite@6.0.3": {
+      "integrity": "sha512-Sh5XqvFuKAwjARTesi0n6xRpEXm1V0UeqKh+SxIrexCofxOaieNDMqXZD02RiZCg0mrJ43V8eCMuVrDfq6mLmg==",
       "dependencies": [
         "vite"
       ]
@@ -617,8 +617,7 @@
         "react-dom"
       ],
       "optionalPeers": [
-        "@types/react",
-        "@types/react-dom@^18.0.0 || ^19.0.0"
+        "@types/react"
       ]
     },
     "@types/aria-query@5.0.4": {
@@ -691,7 +690,6 @@
         "vite"
       ],
       "optionalPeers": [
-        "msw@^2.4.9",
         "vite"
       ]
     },
@@ -898,6 +896,7 @@
         "@esbuild/win32-ia32",
         "@esbuild/win32-x64"
       ],
+      "scripts": true,
       "bin": true
     },
     "escalade@3.2.0": {
@@ -930,14 +929,14 @@
         "tslib"
       ],
       "optionalPeers": [
-        "@emotion/is-prop-valid@*",
         "react",
         "react-dom"
       ]
     },
     "fsevents@2.3.3": {
       "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==",
-      "os": ["darwin"]
+      "os": ["darwin"],
+      "scripts": true
     },
     "gensync@1.0.0-beta.2": {
       "integrity": "sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg=="
@@ -1007,9 +1006,6 @@
         "whatwg-url",
         "ws",
         "xml-name-validator"
-      ],
-      "optionalPeers": [
-        "canvas@^2.11.2"
       ]
     },
     "jsesc@3.1.0": {
@@ -1290,19 +1286,6 @@
       "optionalDependencies": [
         "fsevents"
       ],
-      "optionalPeers": [
-        "@types/node@^18.0.0 || ^20.0.0 || >=22.0.0",
-        "jiti@>=1.21.0",
-        "less@*",
-        "lightningcss@^1.21.0",
-        "sass@*",
-        "sass-embedded@*",
-        "stylus@*",
-        "sugarss@*",
-        "terser@^5.16.0",
-        "tsx@^4.8.1",
-        "yaml@^2.4.2"
-      ],
       "bin": true
     },
     "vitest@3.0.2_jsdom@25.0.1_vite@6.0.3": {
@@ -1331,11 +1314,6 @@
         "why-is-node-running"
       ],
       "optionalPeers": [
-        "@edge-runtime/vm@*",
-        "@types/node@^18.0.0 || ^20.0.0 || >=22.0.0",
-        "@vitest/browser@3.0.2",
-        "@vitest/ui@3.0.2",
-        "happy-dom@*",
         "jsdom"
       ],
       "bin": true
@@ -1375,11 +1353,7 @@
       "bin": true
     },
     "ws@8.18.0": {
-      "integrity": "sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==",
-      "optionalPeers": [
-        "bufferutil@^4.0.1",
-        "utf-8-validate@>=5.0.2"
-      ]
+      "integrity": "sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw=="
     },
     "xml-name-validator@5.0.0": {
       "integrity": "sha512-EvGK8EJ3DhaHfbRlETOWAS5pO9MZITeauHKJyb8wyajUfQUenkIg2MvLDTZ4T/TgIcm3HU0TFBgWWboAZ30UHg=="
@@ -1398,7 +1372,7 @@
     "members": {
       "client": {
         "dependencies": [
-          "npm:@deno/vite-plugin@^1.0.2",
+          "npm:@deno/vite-plugin@^1.0.6",
           "npm:@fontsource-variable/quicksand@^5.1.0",
           "npm:@testing-library/dom@^10.4.0",
           "npm:@testing-library/jest-dom@^6.6.3",
