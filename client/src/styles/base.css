@@ -5,7 +5,7 @@
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-y: scroll;
+  overflow-y: auto;
   min-height: 100vh;
   text-underline-offset: 0.2em;
   letter-spacing: var(--letter-sm);

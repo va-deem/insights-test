@@ -16,9 +16,13 @@
 }
 
 .insight-meta {
+  position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  padding-right: var(--size-6);
+  gap: var(--size-2);
   font: var(--text-sm);
   color: var(--color-text-light);
 }
@@ -30,6 +34,9 @@
 }
 
 .insight-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
   width: var(--size-5);
   height: var(--size-5);
   cursor: pointer;
