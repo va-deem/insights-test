@@ -11,7 +11,6 @@ export const App = () => {
     fetch(`/api/insights`)
       .then((res) => res.json())
       .then((res) => {
-        console.log("Fetched insights:", res);
         setInsights(res.map((item: unknown) => Insight.parse(item)));
       })
       .catch((err) => console.error(err));
