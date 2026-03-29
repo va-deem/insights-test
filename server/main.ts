@@ -59,6 +59,7 @@ router.get("/insights/:id", (ctx) => {
 
   if (result === undefined) {
     ctx.response.status = 404;
+    ctx.response.body = { error: "Not found" };
     return;
   }
 
@@ -67,7 +68,15 @@ router.get("/insights/:id", (ctx) => {
 });
 
 router.post("/insights", async (ctx) => {
-  const body = await ctx.request.body.json();
+  let body;
+  try {
+    body = await ctx.request.body.json();
+  } catch {
+    ctx.response.status = 400;
+    ctx.response.body = { error: "Invalid JSON" };
+    return;
+  }
+
   const parsed = InsertInsight.safeParse(body);
 
   if (!parsed.success) {
@@ -81,7 +90,7 @@ router.post("/insights", async (ctx) => {
     ctx.response.body = result;
     ctx.response.status = 201;
   } catch (error) {
-    console.log("Server error: ", error);
+    console.error("Server error: ", error);
     ctx.response.body = { error: "Failed to create insight" };
     ctx.response.status = 500;
   }
@@ -99,12 +108,13 @@ router.delete("/insights/:id", (ctx) => {
     const result = deleteInsight({ db }, id.data);
     if (result === undefined) {
       ctx.response.status = 404;
+      ctx.response.body = { error: "Not found" };
       return;
     }
     ctx.response.body = { id: result };
     ctx.response.status = 200;
   } catch (error) {
-    console.log("Server error: ", error);
+    console.error("Server error: ", error);
     ctx.response.body = { error: "Failed to delete insight" };
     ctx.response.status = 500;
   }
