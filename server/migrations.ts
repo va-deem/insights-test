@@ -36,6 +36,14 @@ const migrations: Migration[] = [
       db.exec(insightsTable.createTable);
     },
   },
+  {
+    id: "003_recreate_insights_with_brand_fk",
+    up(db) {
+      // Recreate insights with a foreign key; assumes no existing data must be preserved
+      db.exec("DROP TABLE IF EXISTS insights");
+      db.exec(insightsTable.createTable);
+    },
+  },
 ];
 
 const createMigrationsTable = `

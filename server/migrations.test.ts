@@ -20,10 +20,14 @@ describe("runMigrations", () => {
       const insightsColumns = db.sql<{ name: string }>`
         PRAGMA table_info(insights)
       `;
+      const insightsForeignKeys = db.sql<{ table: string; from: string; to: string }>`
+        PRAGMA foreign_key_list(insights)
+      `;
 
       expect(migrations).toEqual([
         { id: "001_create_brands" },
         { id: "002_create_insights" },
+        { id: "003_recreate_insights_with_brand_fk" },
       ]);
       expect(brands).toEqual([
         { id: 1, name: "Brand 1" },
@@ -38,6 +42,11 @@ describe("runMigrations", () => {
         "brand",
         "createdAt",
         "text",
+      ]);
+      expect(
+        insightsForeignKeys.map(({ table, from, to }) => ({ table, from, to })),
+      ).toEqual([
+        { table: "brands", from: "brand", to: "id" },
       ]);
     } finally {
       db.close();

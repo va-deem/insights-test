@@ -57,4 +57,22 @@ describe("creating an insight in the database", () => {
       });
     });
   });
+
+  describe("inserting an insight with an unknown brand", () => {
+    withDB((fixture) => {
+      let error: Error | undefined;
+
+      beforeAll(() => {
+        try {
+          createInsight(fixture, { brand: 999, text: "Invalid brand" });
+        } catch (cause) {
+          error = cause as Error;
+        }
+      });
+
+      it("fails with a foreign key violation", () => {
+        expect(error).toBeDefined();
+      });
+    });
+  });
 });
