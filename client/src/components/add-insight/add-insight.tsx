@@ -1,21 +1,31 @@
-import { useRef, useState } from "react";
-import { BRANDS } from "../../lib/consts.ts";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../button/button.tsx";
 import { Modal, type ModalProps } from "../modal/modal.tsx";
 import styles from "./add-insight.module.css";
-import { type InsertInsight, Insight } from "../../schemas/insight.ts";
+import {
+  type Brand,
+  type InsertInsight,
+  Insight,
+} from "../../schemas/insight.ts";
 
 type AddInsightProps = {
   addNewInsight: (newInsight: Insight) => void;
+  brands: Brand[];
 } & ModalProps;
 
 export const AddInsight = (props: AddInsightProps) => {
-  const { addNewInsight, onClose, ...modalProps } = props;
+  const { addNewInsight, brands, onClose, ...modalProps } = props;
 
-  const [brand, setBrand] = useState<number>(BRANDS[0].id);
+  const [brand, setBrand] = useState<number>(brands[0]?.id ?? 0);
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (brands.length > 0 && !brands.some(({ id }) => id === brand)) {
+      setBrand(brands[0].id);
+    }
+  }, [brand, brands]);
 
   const handleClose = () => {
     setError(null);
@@ -47,7 +57,7 @@ export const AddInsight = (props: AddInsightProps) => {
       })
       .then((data) => {
         addNewInsight(Insight.parse(data));
-        setBrand(BRANDS[0].id);
+        setBrand(brands[0]?.id ?? 0);
         setText("");
         handleClose();
       })
@@ -76,8 +86,9 @@ export const AddInsight = (props: AddInsightProps) => {
             className={styles["field-input"]}
             value={brand}
             onChange={handleSelectBrand}
+            disabled={brands.length === 0}
           >
-            {BRANDS.map(({ id, name }) => (
+            {brands.map(({ id, name }) => (
               <option value={id} key={id}>{name}</option>
             ))}
           </select>

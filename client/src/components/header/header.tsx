@@ -2,15 +2,16 @@ import { useState } from "react";
 import { Button } from "../button/button.tsx";
 import styles from "./header.module.css";
 import { AddInsight } from "../add-insight/add-insight.tsx";
-import type { Insight } from "../../schemas/insight.ts";
+import type { Brand, Insight } from "../../schemas/insight.ts";
 
 export const HEADER_TEXT = "Suit Tracker Insights";
 
 type HeaderProps = {
   addNewInsight: (newInsight: Insight) => void;
+  brands: Brand[];
 };
 
-export const Header = ({ addNewInsight }: HeaderProps) => {
+export const Header = ({ addNewInsight, brands }: HeaderProps) => {
   const [addInsightOpen, setAddInsightOpen] = useState(false);
 
   return (
@@ -29,6 +30,7 @@ export const Header = ({ addNewInsight }: HeaderProps) => {
         open={addInsightOpen}
         onClose={() => setAddInsightOpen(false)}
         addNewInsight={addNewInsight}
+        brands={brands}
       />
     </>
   );

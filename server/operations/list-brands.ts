@@ -7,7 +7,9 @@ type Input = HasDBClient;
 export default (input: Input): Brand[] => {
   console.log("Listing brands");
 
-  const result = input.db.sql<brandsTable.Row>`SELECT * FROM brands ORDER BY id`;
+  const result = input.db.sql<
+    brandsTable.Row
+  >`SELECT * FROM brands ORDER BY id`;
 
   console.log("Retrieved brands successfully: ", result);
   return result;

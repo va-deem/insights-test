@@ -20,7 +20,9 @@ describe("runMigrations", () => {
       const insightsColumns = db.sql<{ name: string }>`
         PRAGMA table_info(insights)
       `;
-      const insightsForeignKeys = db.sql<{ table: string; from: string; to: string }>`
+      const insightsForeignKeys = db.sql<
+        { table: string; from: string; to: string }
+      >`
         PRAGMA foreign_key_list(insights)
       `;
 

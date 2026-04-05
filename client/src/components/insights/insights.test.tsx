@@ -2,6 +2,11 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 import { Insights } from "./insights.tsx";
 
+const TEST_BRANDS = [
+  { id: 1, name: "Brand 1" },
+  { id: 2, name: "Brand 2" },
+];
+
 const TEST_INSIGHTS = [
   {
     id: 1,
@@ -15,7 +20,11 @@ const TEST_INSIGHTS = [
 describe("insights", () => {
   it("renders", () => {
     const { getByText } = render(
-      <Insights insights={TEST_INSIGHTS} removeInsight={() => {}} />,
+      <Insights
+        brands={TEST_BRANDS}
+        insights={TEST_INSIGHTS}
+        removeInsight={() => {}}
+      />,
     );
     expect(getByText(TEST_INSIGHTS[0].text)).toBeTruthy();
   });
