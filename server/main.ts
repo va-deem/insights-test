@@ -55,16 +55,22 @@ router.get("/insights/:id", (ctx) => {
     return;
   }
 
-  const result = lookupInsight({ db, id: id.data });
+  try {
+    const result = lookupInsight({ db, id: id.data });
 
-  if (result === undefined) {
-    ctx.response.status = 404;
-    ctx.response.body = { error: "Not found" };
-    return;
+    if (result === undefined) {
+      ctx.response.status = 404;
+      ctx.response.body = { error: "Not found" };
+      return;
+    }
+
+    ctx.response.body = result;
+    ctx.response.status = 200;
+  } catch (error) {
+    console.error("Server error: ", error);
+    ctx.response.body = { error: "Failed to retrieve insight" };
+    ctx.response.status = 500;
   }
-
-  ctx.response.body = result;
-  ctx.response.status = 200;
 });
 
 router.post("/insights", async (ctx) => {
