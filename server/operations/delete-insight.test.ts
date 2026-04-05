@@ -10,9 +10,9 @@ describe("deleting an insight from the database", () => {
 
       beforeAll(() => {
         fixture.insights.insert([
-          { brand: 0, text: "1" },
-          { brand: 1, text: "2" },
-          { brand: 2, text: "3" },
+          { brand: 1, text: "1" },
+          { brand: 2, text: "2" },
+          { brand: 3, text: "3" },
         ]);
         result = deleteInsight(fixture, 2);
       });

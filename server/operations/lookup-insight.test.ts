@@ -22,9 +22,9 @@ describe("listing insights in the database", () => {
   describe("insight is in the DB", () => {
     withDB((fixture) => {
       const inputs = [
-        { brand: 0, text: "1" },
-        { brand: 0, text: "2" },
-        { brand: 1, text: "3" },
+        { brand: 1, text: "1" },
+        { brand: 2, text: "2" },
+        { brand: 3, text: "3" },
         { brand: 4, text: "4" },
       ];
 

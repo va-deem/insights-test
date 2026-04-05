@@ -1,4 +1,5 @@
 import type { Database } from "@db/sqlite";
+import * as brandsTable from "$tables/brands.ts";
 import * as insightsTable from "$tables/insights.ts";
 
 type Migration = {
@@ -6,9 +7,31 @@ type Migration = {
   up(db: Database): void;
 };
 
+const initialBrands: brandsTable.Row[] = [
+  { id: 1, name: "Brand 1" },
+  { id: 2, name: "Brand 2" },
+  { id: 3, name: "Brand 3" },
+  { id: 4, name: "Brand 4" },
+  { id: 5, name: "Brand 5" },
+  { id: 6, name: "Brand 6" },
+];
+
 const migrations: Migration[] = [
   {
-    id: "001_create_insights",
+    id: "001_create_brands",
+    up(db) {
+      db.exec(brandsTable.createTable);
+
+      for (const brand of initialBrands) {
+        db.sql`
+          INSERT INTO brands (id, name)
+          VALUES (${brand.id}, ${brand.name})
+        `;
+      }
+    },
+  },
+  {
+    id: "002_create_insights",
     up(db) {
       db.exec(insightsTable.createTable);
     },

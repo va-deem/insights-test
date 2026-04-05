@@ -1,8 +1,8 @@
 import { Trash2Icon } from "lucide-react";
 import { cx } from "../../lib/cx.ts";
+import { BRANDS } from "../../lib/consts.ts";
 import styles from "./insights.module.css";
 import type { Insight } from "../../schemas/insight.ts";
-import { BRANDS } from "../../lib/consts.ts";
 
 type InsightsProps = {
   insights: Insight[];

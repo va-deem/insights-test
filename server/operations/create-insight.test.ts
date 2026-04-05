@@ -37,8 +37,8 @@ describe("creating an insight in the database", () => {
   describe("inserting multiple insights", () => {
     withDB((fixture) => {
       const inputs = [
-        { brand: 0, text: "First" },
-        { brand: 1, text: "Second" },
+        { brand: 1, text: "First" },
+        { brand: 2, text: "Second" },
       ];
 
       let results: Insight[];

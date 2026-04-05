@@ -12,7 +12,7 @@ type AddInsightProps = {
 export const AddInsight = (props: AddInsightProps) => {
   const { addNewInsight, onClose, ...modalProps } = props;
 
-  const [brand, setBrand] = useState(BRANDS[0].id);
+  const [brand, setBrand] = useState<number>(BRANDS[0].id);
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
