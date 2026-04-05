@@ -2,6 +2,7 @@ import { Database } from "@db/sqlite";
 import * as insightsTable from "$tables/insights.ts";
 import type { HasDBClient } from "./shared.ts";
 import { afterAll, beforeAll } from "@std/testing/bdd";
+import { runMigrations } from "./migrations.ts";
 
 type Fixture = HasDBClient & {
   insights: {
@@ -14,7 +15,7 @@ export const withDB = <R>(fn: (fixture: Fixture) => R): R => {
   const db = new Database(":memory:");
 
   beforeAll(() => {
-    db.exec(insightsTable.createTable);
+    runMigrations(db);
   });
 
   afterAll(() => db.close());

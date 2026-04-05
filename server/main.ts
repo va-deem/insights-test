@@ -9,6 +9,7 @@ import { InsertInsight } from "$models/insight.ts";
 import createInsight from "./operations/create-insight.ts";
 import deleteInsight from "./operations/delete-insight.ts";
 import { z } from "zod";
+import { runMigrations } from "./migrations.ts";
 
 const idParam = z.coerce.number().int().min(0);
 
@@ -24,7 +25,7 @@ console.log(`Opening SQLite database at ${dbFilePath}`);
 
 await Deno.mkdir(path.dirname(dbFilePath), { recursive: true });
 const db = new Database(dbFilePath);
-db.exec(insightsTable.createTable);
+runMigrations(db);
 
 console.log("Initialising server");
 

@@ -1,0 +1,52 @@
+import type { Database } from "@db/sqlite";
+import * as insightsTable from "$tables/insights.ts";
+
+type Migration = {
+  id: string;
+  up(db: Database): void;
+};
+
+const migrations: Migration[] = [
+  {
+    id: "001_create_insights",
+    up(db) {
+      db.exec(insightsTable.createTable);
+    },
+  },
+];
+
+const createMigrationsTable = `
+  CREATE TABLE IF NOT EXISTS schema_migrations (
+    id TEXT PRIMARY KEY NOT NULL,
+    appliedAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )
+`;
+
+export const runMigrations = (db: Database) => {
+  // Enable SQLite foreign key enforcement for this DB connection
+  db.exec("PRAGMA foreign_keys = ON");
+
+  db.exec(createMigrationsTable);
+
+  const applied = new Set(
+    db.sql<{ id: string }>`SELECT id FROM schema_migrations`
+      .map(({ id }) => id),
+  );
+
+  for (const migration of migrations) {
+    if (applied.has(migration.id)) {
+      continue;
+    }
+
+    db.exec("BEGIN");
+
+    try {
+      migration.up(db);
+      db.sql`INSERT INTO schema_migrations (id) VALUES (${migration.id})`;
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+  }
+};
