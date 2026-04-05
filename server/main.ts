@@ -15,7 +15,7 @@ const idParam = z.coerce.number().int().min(0);
 console.log("Loading configuration");
 
 const env = {
-  port: Port.parse(Deno.env.get("SERVER_PORT")),
+  port: Port.parse(Deno.env.get("SERVER_PORT") ?? 8080),
 };
 
 const dbFilePath = path.resolve("tmp", "db.sqlite3");
