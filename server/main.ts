@@ -10,6 +10,7 @@ import createInsight from "./operations/create-insight.ts";
 import deleteInsight from "./operations/delete-insight.ts";
 import { z } from "zod";
 import { runMigrations } from "./migrations.ts";
+import { createBrandsRouter } from "./routers/brands.ts";
 
 const idParam = z.coerce.number().int().min(0);
 
@@ -30,6 +31,7 @@ runMigrations(db);
 console.log("Initialising server");
 
 const router = new oak.Router();
+const brandsRouter = createBrandsRouter({ db });
 
 router.get("/_health", (ctx) => {
   ctx.response.body = "OK";
@@ -131,6 +133,8 @@ const app = new oak.Application();
 
 app.use(router.routes());
 app.use(router.allowedMethods());
+app.use(brandsRouter.routes());
+app.use(brandsRouter.allowedMethods());
 
 app.listen(env);
 console.log(`Started server on port ${env.port}`);
