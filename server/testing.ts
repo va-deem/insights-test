@@ -27,7 +27,7 @@ export const withDB = <R>(fn: (fixture: Fixture) => R): R => {
       },
       insert(insights) {
         for (const item of insights) {
-          db.sql`INSERT INTO insights (brand, createdAt, text) VALUES (${item.brand}, ${item.createdAt}, ${item.text})`;
+          db.sql`INSERT INTO insights (brand, text) VALUES (${item.brand}, ${item.text})`;
         }
       },
     },

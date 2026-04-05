@@ -28,7 +28,6 @@ export const AddInsight = (props: AddInsightProps) => {
     const insightInput: InsertInsight = {
       brand,
       text: text.trim(),
-      createdAt: new Date().toISOString(),
     };
 
     fetch("/api/insights", {

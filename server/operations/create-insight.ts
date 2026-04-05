@@ -9,8 +9,8 @@ export default (input: Input, item: InsertInsight): Insight => {
 
   const row = (input.db.sql<
     insightsTable.Row
-  >`INSERT INTO insights (brand, createdAt, text) 
-    VALUES (${item.brand}, ${item.createdAt}, ${item.text}) RETURNING *`)[0];
+  >`INSERT INTO insights (brand, text)
+    VALUES (${item.brand}, ${item.text}) RETURNING *`)[0];
 
   const result: Insight = { ...row, createdAt: new Date(row.createdAt) };
 

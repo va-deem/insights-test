@@ -11,7 +11,6 @@ describe("creating an insight in the database", () => {
 
       const input = {
         brand: 2,
-        createdAt: new Date().toISOString(),
         text: "A new insight",
       };
 
@@ -20,12 +19,10 @@ describe("creating an insight in the database", () => {
       });
 
       it("returns the created insight", () => {
-        expect(result).toEqual({
-          id: 1,
-          brand: input.brand,
-          createdAt: new Date(input.createdAt),
-          text: input.text,
-        });
+        expect(result.id).toBe(1);
+        expect(result.brand).toBe(input.brand);
+        expect(result.text).toBe(input.text);
+        expect(result.createdAt).toBeInstanceOf(Date);
       });
 
       it("persists the insight in the DB", () => {
@@ -40,8 +37,8 @@ describe("creating an insight in the database", () => {
   describe("inserting multiple insights", () => {
     withDB((fixture) => {
       const inputs = [
-        { brand: 0, createdAt: new Date().toISOString(), text: "First" },
-        { brand: 1, createdAt: new Date().toISOString(), text: "Second" },
+        { brand: 0, text: "First" },
+        { brand: 1, text: "Second" },
       ];
 
       let results: Insight[];

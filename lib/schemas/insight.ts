@@ -9,9 +9,10 @@ export const Insight = z.object({
 
 export type Insight = z.infer<typeof Insight>;
 
-export const InsertInsight = Insight.omit({ id: true }).extend({
-  createdAt: z.string().datetime(),
-  text: z.string().min(1).max(1000),
-});
+export const InsertInsight = Insight.omit({ id: true, createdAt: true }).extend(
+  {
+    text: z.string().min(1).max(1000),
+  },
+);
 
 export type InsertInsight = z.infer<typeof InsertInsight>;

@@ -21,22 +21,17 @@ describe("listing insights in the database", () => {
 
   describe("populated DB", () => {
     withDB((fixture) => {
-      const insights: Insight[] = [
-        { id: 1, brand: 0, createdAt: new Date(), text: "1" },
-        { id: 2, brand: 0, createdAt: new Date(), text: "2" },
-        { id: 3, brand: 1, createdAt: new Date(), text: "3" },
-        { id: 4, brand: 4, createdAt: new Date(), text: "4" },
+      const inputs = [
+        { brand: 0, text: "1" },
+        { brand: 0, text: "2" },
+        { brand: 1, text: "3" },
+        { brand: 4, text: "4" },
       ];
 
       let result: Insight[];
 
       beforeAll(() => {
-        fixture.insights.insert(
-          insights.map((it) => ({
-            ...it,
-            createdAt: it.createdAt.toISOString(),
-          })),
-        );
+        fixture.insights.insert(inputs);
         result = listInsights(fixture);
       });
 
@@ -45,7 +40,12 @@ describe("listing insights in the database", () => {
       });
 
       it("returns all insights in the DB", () => {
-        expect(result).toEqual(insights);
+        expect(result).toHaveLength(inputs.length);
+        for (let i = 0; i < inputs.length; i++) {
+          expect(result[i].brand).toBe(inputs[i].brand);
+          expect(result[i].text).toBe(inputs[i].text);
+          expect(result[i].createdAt).toBeInstanceOf(Date);
+        }
       });
     });
   });
