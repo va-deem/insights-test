@@ -40,6 +40,24 @@ export const Modal = ({ open, onClose, children }: ModalProps) => {
     document.documentElement.style.overflow = open ? "hidden" : "";
   }, [open]);
 
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose, open]);
+
   return createPortal(
     <AnimatePresence>
       {open && (
@@ -60,7 +78,14 @@ export const Modal = ({ open, onClose, children }: ModalProps) => {
                 e.stopPropagation();
               }}
             >
-              <XIcon className={styles.close} onClick={onClose} />
+              <button
+                type="button"
+                className={styles.close}
+                onClick={onClose}
+                aria-label="Close modal"
+              >
+                <XIcon className={styles.closeIcon} />
+              </button>
 
               <div className={cx(styles.content)}>{children}</div>
             </motion.div>

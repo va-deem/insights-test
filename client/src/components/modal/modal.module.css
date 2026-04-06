@@ -27,10 +27,32 @@
 }
 
 .close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: var(--size-6);
   right: var(--size-6);
   width: var(--size-5);
   height: var(--size-5);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-light);
   cursor: pointer;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: color 250ms ease, box-shadow 250ms ease;
+  &:hover {
+    color: var(--color-text);
+  }
+  &:focus-visible {
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--color-purple-500) 20%, transparent);
+  }
+}
+
+.closeIcon {
+  width: var(--size-5);
+  height: var(--size-5);
 }
