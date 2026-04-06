@@ -1,6 +1,11 @@
 import * as oak from "@oak/oak";
 import { z } from "zod";
 import { InsertInsight } from "$models/insight.ts";
+import {
+  BadRequestError,
+  NotFoundError,
+  internalServerError,
+} from "../errors.ts";
 import createInsight from "../operations/create-insight.ts";
 import deleteInsight from "../operations/delete-insight.ts";
 import listInsights from "../operations/list-insights.ts";
@@ -20,36 +25,29 @@ export const createInsightsRouter = (input: Input) => {
       ctx.response.body = result;
       ctx.response.status = 200;
     } catch (error) {
-      console.error("Server error: ", error);
-      ctx.response.body = { error: "Failed to retrieve insights data" };
-      ctx.response.status = 500;
+      throw internalServerError("Failed to retrieve insights data", error);
     }
   });
 
   router.get("/insights/:id", (ctx) => {
     const id = idParam.safeParse(ctx.params.id);
     if (!id.success) {
-      ctx.response.status = 400;
-      ctx.response.body = { error: id.error.issues };
-      return;
+      throw new BadRequestError({ error: id.error.issues });
     }
 
+    let result;
     try {
-      const result = lookupInsight({ ...input, id: id.data });
-
-      if (result === undefined) {
-        ctx.response.status = 404;
-        ctx.response.body = { error: "Not found" };
-        return;
-      }
-
-      ctx.response.body = result;
-      ctx.response.status = 200;
+      result = lookupInsight({ ...input, id: id.data });
     } catch (error) {
-      console.error("Server error: ", error);
-      ctx.response.body = { error: "Failed to retrieve insight" };
-      ctx.response.status = 500;
+      throw internalServerError("Failed to retrieve insight", error);
     }
+
+    if (result === undefined) {
+      throw new NotFoundError();
+    }
+
+    ctx.response.body = result;
+    ctx.response.status = 200;
   });
 
   router.post("/insights", async (ctx) => {
@@ -57,17 +55,13 @@ export const createInsightsRouter = (input: Input) => {
     try {
       body = await ctx.request.body.json();
     } catch {
-      ctx.response.status = 400;
-      ctx.response.body = { error: "Invalid JSON" };
-      return;
+      throw new BadRequestError({ error: "Invalid JSON" });
     }
 
     const parsed = InsertInsight.safeParse(body);
 
     if (!parsed.success) {
-      ctx.response.status = 400;
-      ctx.response.body = { error: parsed.error.issues };
-      return;
+      throw new BadRequestError({ error: parsed.error.issues });
     }
 
     try {
@@ -75,34 +69,29 @@ export const createInsightsRouter = (input: Input) => {
       ctx.response.body = result;
       ctx.response.status = 201;
     } catch (error) {
-      console.error("Server error: ", error);
-      ctx.response.body = { error: "Failed to create insight" };
-      ctx.response.status = 500;
+      throw internalServerError("Failed to create insight", error);
     }
   });
 
   router.delete("/insights/:id", (ctx) => {
     const id = idParam.safeParse(ctx.params.id);
     if (!id.success) {
-      ctx.response.status = 400;
-      ctx.response.body = { error: id.error.issues };
-      return;
+      throw new BadRequestError({ error: id.error.issues });
     }
 
+    let result;
     try {
-      const result = deleteInsight(input, id.data);
-      if (result === undefined) {
-        ctx.response.status = 404;
-        ctx.response.body = { error: "Not found" };
-        return;
-      }
-      ctx.response.body = { id: result };
-      ctx.response.status = 200;
+      result = deleteInsight(input, id.data);
     } catch (error) {
-      console.error("Server error: ", error);
-      ctx.response.body = { error: "Failed to delete insight" };
-      ctx.response.status = 500;
+      throw internalServerError("Failed to delete insight", error);
     }
+
+    if (result === undefined) {
+      throw new NotFoundError();
+    }
+
+    ctx.response.body = { id: result };
+    ctx.response.status = 200;
   });
 
   return router;

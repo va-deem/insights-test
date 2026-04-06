@@ -1,4 +1,5 @@
 import * as oak from "@oak/oak";
+import { internalServerError } from "../errors.ts";
 import listBrands from "../operations/list-brands.ts";
 import type { HasDBClient } from "../shared.ts";
 
@@ -13,9 +14,7 @@ export const createBrandsRouter = (input: Input) => {
       ctx.response.body = result;
       ctx.response.status = 200;
     } catch (error) {
-      console.error("Server error: ", error);
-      ctx.response.body = { error: "Failed to retrieve brands data" };
-      ctx.response.status = 500;
+      throw internalServerError("Failed to retrieve brands data", error);
     }
   });
 

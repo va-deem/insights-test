@@ -1,4 +1,6 @@
 import * as oak from "@oak/oak";
+import { errorMiddleware } from "./middleware/error.ts";
+import { notFoundMiddleware } from "./middleware/not-found.ts";
 import { createBaseRouter } from "./routers/base.ts";
 import { createBrandsRouter } from "./routers/brands.ts";
 import { createInsightsRouter } from "./routers/insights.ts";
@@ -14,10 +16,14 @@ export const createApp = (input: Input) => {
     createInsightsRouter(input),
   ];
 
+  app.use(errorMiddleware);
+
   for (const router of routers) {
     app.use(router.routes());
     app.use(router.allowedMethods());
   }
+
+  app.use(notFoundMiddleware);
 
   return app;
 };

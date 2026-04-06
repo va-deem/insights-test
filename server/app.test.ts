@@ -13,6 +13,31 @@ const TEST_CTX = {
 };
 
 describe("createApp", () => {
+  describe("unmatched route", () => {
+    withDB((fixture) => {
+      const app = createApp(fixture);
+      let response: Response;
+      let body: unknown;
+
+      beforeAll(async () => {
+        response = await app.fetch(
+          new Request(`${BASE_URL}/missing`),
+          TEST_ENV,
+          TEST_CTX,
+        );
+        body = await response.json();
+      });
+
+      it("returns 404", () => {
+        expect(response.status).toBe(404);
+      });
+
+      it("returns not found error", () => {
+        expect(body).toEqual({ error: "Not found" });
+      });
+    });
+  });
+
   describe("health endpoint", () => {
     withDB((fixture) => {
       const app = createApp(fixture);
