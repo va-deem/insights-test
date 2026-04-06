@@ -1,7 +1,7 @@
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { XIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { cx } from "../../lib/cx.ts";
 import styles from "./modal.module.css";
@@ -36,8 +36,31 @@ const ANIMATIONS = {
  * Modal that opens in a portal
  */
 export const Modal = ({ open, onClose, children }: ModalProps) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const previousActiveElement = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+
+    const firstFocusable = contentRef.current?.querySelector<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+
+    (firstFocusable ?? modalRef.current)?.focus();
+
+    return () => {
+      previousActiveElement?.focus();
+    };
   }, [open]);
 
   useEffect(() => {
@@ -72,8 +95,12 @@ export const Modal = ({ open, onClose, children }: ModalProps) => {
             data-testid="overlay"
           >
             <motion.div
+              ref={modalRef}
               className={cx(styles.modal)}
               variants={ANIMATIONS.modal}
+              role="dialog"
+              aria-modal="true"
+              tabIndex={-1}
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -87,7 +114,9 @@ export const Modal = ({ open, onClose, children }: ModalProps) => {
                 <XIcon className={styles.closeIcon} />
               </button>
 
-              <div className={cx(styles.content)}>{children}</div>
+              <div ref={contentRef} className={cx(styles.content)}>
+                {children}
+              </div>
             </motion.div>
           </motion.div>
         </LayoutGroup>

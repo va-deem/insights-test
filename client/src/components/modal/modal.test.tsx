@@ -32,4 +32,16 @@ describe("Modal", () => {
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it("moves focus into the modal when opened", () => {
+    render(
+      <Modal open onClose={() => undefined}>
+        <button type="button">Primary action</button>
+      </Modal>,
+    );
+
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "Primary action" }),
+    );
+  });
 });
