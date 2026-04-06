@@ -6,7 +6,7 @@ type Input = HasDBClient & {
   id: number;
 };
 
-export default (input: Input): Insight | undefined => {
+export const lookupInsight = (input: Input): Insight | undefined => {
   console.log(`Looking up insight for id=${input.id}`);
 
   const [row] = input.db

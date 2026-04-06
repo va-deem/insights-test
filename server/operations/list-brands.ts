@@ -4,7 +4,7 @@ import type * as brandsTable from "$tables/brands.ts";
 
 type Input = HasDBClient;
 
-export default (input: Input): Brand[] => {
+export const listBrands = (input: Input): Brand[] => {
   console.log("Listing brands");
 
   const result = input.db.sql<

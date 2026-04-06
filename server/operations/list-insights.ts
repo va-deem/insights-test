@@ -4,7 +4,7 @@ import type * as insightsTable from "$tables/insights.ts";
 
 type Input = HasDBClient;
 
-export default (input: Input): Insight[] => {
+export const listInsights = (input: Input): Insight[] => {
   console.log("Listing insights");
 
   const rows = input.db.sql<insightsTable.Row>`SELECT * FROM insights`;

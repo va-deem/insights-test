@@ -1,6 +1,6 @@
 import * as oak from "@oak/oak";
 import { internalServerError } from "../errors.ts";
-import listBrands from "../operations/list-brands.ts";
+import { listBrands } from "../operations/list-brands.ts";
 import type { HasDBClient } from "../shared.ts";
 
 type Input = HasDBClient;

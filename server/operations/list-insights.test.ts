@@ -3,7 +3,7 @@ import { beforeAll, describe, it } from "@std/testing/bdd";
 import { z } from "zod";
 import type { Insight } from "$models/insight.ts";
 import { withDB } from "../testing.ts";
-import listInsights from "./list-insights.ts";
+import { listInsights } from "./list-insights.ts";
 
 describe("listing insights in the database", () => {
   describe("nothing in the DB", () => {

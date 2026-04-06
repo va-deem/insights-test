@@ -2,7 +2,7 @@ import { expect } from "@std/expect";
 import { beforeAll, describe, it } from "@std/testing/bdd";
 import type { Brand } from "$models/insight.ts";
 import { withDB } from "../testing.ts";
-import listBrands from "./list-brands.ts";
+import { listBrands } from "./list-brands.ts";
 
 describe("listing brands in the database", () => {
   withDB((fixture) => {

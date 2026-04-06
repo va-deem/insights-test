@@ -4,7 +4,7 @@ import type * as insightsTable from "$tables/insights.ts";
 
 type Input = HasDBClient;
 
-export default (input: Input, item: InsertInsight): Insight => {
+export const createInsight = (input: Input, item: InsertInsight): Insight => {
   console.log("Creating insight");
 
   const row = (input.db.sql<

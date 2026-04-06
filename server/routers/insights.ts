@@ -6,11 +6,11 @@ import {
   internalServerError,
   NotFoundError,
 } from "../errors.ts";
-import createInsight from "../operations/create-insight.ts";
-import deleteInsight from "../operations/delete-insight.ts";
-import listInsights from "../operations/list-insights.ts";
-import lookupInsight from "../operations/lookup-insight.ts";
-import updateInsight from "../operations/update-insight.ts";
+import { createInsight } from "../operations/create-insight.ts";
+import { deleteInsight } from "../operations/delete-insight.ts";
+import { listInsights } from "../operations/list-insights.ts";
+import { lookupInsight } from "../operations/lookup-insight.ts";
+import { updateInsight } from "../operations/update-insight.ts";
 import type { HasDBClient } from "../shared.ts";
 
 type Input = HasDBClient;

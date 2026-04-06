@@ -6,7 +6,10 @@ type Input = HasDBClient & {
   id: number;
 };
 
-export default (input: Input, item: InsertInsight): Insight | undefined => {
+export const updateInsight = (
+  input: Input,
+  item: InsertInsight,
+): Insight | undefined => {
   console.log(`Updating insight for id=${input.id}`);
 
   const row = input.db.sql<

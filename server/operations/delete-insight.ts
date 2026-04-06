@@ -3,7 +3,7 @@ import type * as insightsTable from "$tables/insights.ts";
 
 type Input = HasDBClient;
 
-export default (input: Input, id: number): number | undefined => {
+export const deleteInsight = (input: Input, id: number): number | undefined => {
   console.log("Deleting insight");
 
   const row = input.db.sql<

@@ -1,7 +1,7 @@
 import { expect } from "@std/expect";
 import { beforeAll, describe, it } from "@std/testing/bdd";
 import { withDB } from "../testing.ts";
-import deleteInsight from "./delete-insight.ts";
+import { deleteInsight } from "./delete-insight.ts";
 
 describe("deleting an insight from the database", () => {
   describe("insight exists", () => {

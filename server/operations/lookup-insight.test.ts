@@ -3,7 +3,7 @@ import { expect } from "@std/expect";
 import { z } from "zod";
 import { withDB } from "../testing.ts";
 import type { Insight } from "$models/insight.ts";
-import lookupInsight from "./lookup-insight.ts";
+import { lookupInsight } from "./lookup-insight.ts";
 
 describe("listing insights in the database", () => {
   describe("specified insight not in the DB", () => {
