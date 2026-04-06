@@ -29,7 +29,7 @@ describe("insights", () => {
         brands={TEST_BRANDS}
         insights={TEST_INSIGHTS}
         onEditInsight={() => {}}
-        onDeleteInsight={(id) => Promise.resolve(id)}
+        onDeleteInsight={() => {}}
       />,
     );
     expect(getByText(TEST_INSIGHTS[0].text)).toBeTruthy();
@@ -44,7 +44,7 @@ describe("insights", () => {
         isError
         insights={[]}
         onEditInsight={() => {}}
-        onDeleteInsight={(id) => Promise.resolve(id)}
+        onDeleteInsight={() => {}}
       />,
     );
 

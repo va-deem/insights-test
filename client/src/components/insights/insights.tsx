@@ -8,7 +8,7 @@ type InsightsProps = {
   isError?: boolean;
   insights: Insight[];
   onEditInsight: (insight: Insight) => void;
-  onDeleteInsight: (id: Insight["id"]) => Promise<Insight["id"]>;
+  onDeleteInsight: (insight: Insight) => void;
   className?: string;
 };
 
@@ -22,14 +22,6 @@ export const Insights = (
   { brands, isError, insights, onDeleteInsight, onEditInsight, className }:
     InsightsProps,
 ) => {
-  const deleteInsight = async (id: number) => {
-    try {
-      await onDeleteInsight(id);
-    } catch (_err) {
-      console.error("Failed to delete insight with id", id);
-    }
-  };
-
   return (
     <div className={cx(className)}>
       <h1 className={styles.heading}>Insights</h1>
@@ -43,19 +35,19 @@ export const Insights = (
           : insights?.length
           ? (
             <ul className={styles.items}>
-              {insights.map(({ id, text, createdAt, brand }) => (
-                <li className={styles.insight} key={id}>
+              {insights.map((insight) => (
+                <li className={styles.insight} key={insight.id}>
                   <div className={styles["insight-meta"]}>
-                    <span>{getBrandName(brands, brand)}</span>
+                    <span>{getBrandName(brands, insight.brand)}</span>
                     <div className={styles["insight-meta-details"]}>
-                      <span>{formatIsoDate(createdAt)}</span>
+                      <span>{formatIsoDate(insight.createdAt)}</span>
                       <div className={styles.actions}>
                         <button
                           type="button"
                           className={styles.action}
                           onClick={() =>
-                            onEditInsight({ id, text, createdAt, brand })}
-                          aria-label={`Edit insight: ${text}`}
+                            onEditInsight(insight)}
+                          aria-label={`Edit insight: ${insight.text}`}
                         >
                           <PencilIcon className={styles.actionIcon} />
                         </button>
@@ -63,15 +55,15 @@ export const Insights = (
                           type="button"
                           className={cx(styles.action, styles.delete)}
                           onClick={() =>
-                            deleteInsight(id)}
-                          aria-label={`Delete insight: ${text}`}
+                            onDeleteInsight(insight)}
+                          aria-label={`Delete insight: ${insight.text}`}
                         >
                           <Trash2Icon className={styles.actionIcon} />
                         </button>
                       </div>
                     </div>
                   </div>
-                  <p className={styles["insight-content"]}>{text}</p>
+                  <p className={styles["insight-content"]}>{insight.text}</p>
                 </li>
               ))}
             </ul>

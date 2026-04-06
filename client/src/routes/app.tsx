@@ -6,9 +6,11 @@ import {
   listInsights,
   updateInsight as updateInsightRequest,
 } from "../http/insights.ts";
+import { Button } from "../components/button/button.tsx";
 import { InsightForm } from "../components/insight-form/insight-form.tsx";
 import { Header } from "../components/header/header.tsx";
 import { Insights } from "../components/insights/insights.tsx";
+import { Modal } from "../components/modal/modal.tsx";
 import styles from "./app.module.css";
 import type { Brand, InsertInsight, Insight } from "../schemas/insight.ts";
 
@@ -17,6 +19,7 @@ export const App = () => {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [isInsightError, setIsInsightError] = useState(false);
   const [editedInsight, setEditedInsight] = useState<Insight | null>(null);
+  const [deletedInsight, setDeletedInsight] = useState<Insight | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -54,6 +57,14 @@ export const App = () => {
     setIsModalOpen(false);
   };
 
+  const openDeleteModal = (insight: Insight) => {
+    setDeletedInsight(insight);
+  };
+
+  const closeDeleteModal = () => {
+    setDeletedInsight(null);
+  };
+
   const saveInsight = async (input: InsertInsight) => {
     if (editedInsight) {
       const updatedInsight = await updateInsightRequest(
@@ -73,15 +84,20 @@ export const App = () => {
     setIsInsightError(false);
   };
 
-  const removeInsight = async (id: Insight["id"]) => {
-    const deletedId = await deleteInsightRequest(id);
+  const removeInsight = async () => {
+    if (!deletedInsight) {
+      return;
+    }
+
+    const deletedId = await deleteInsightRequest(deletedInsight.id);
     setInsights((prev) => prev.filter((i) => i.id !== deletedId));
-    return deletedId;
+    closeDeleteModal();
   };
 
   return (
     <main className={styles.main}>
       <Header onAddInsightClick={openCreateModal} />
+
       <InsightForm
         open={isModalOpen}
         onClose={closeModal}
@@ -89,13 +105,25 @@ export const App = () => {
         onSubmitInsight={saveInsight}
         brands={brands}
       />
+
+      <Modal open={deletedInsight !== null} onClose={closeDeleteModal}>
+        <p className={styles.dialogText}>Delete this insight?</p>
+        <div className={styles.dialogActions}>
+          <Button
+            type="button"
+            label="Delete"
+            onClick={() => void removeInsight()}
+          />
+        </div>
+      </Modal>
+
       <Insights
         className={styles.insights}
         brands={brands}
         isError={isInsightError}
         insights={insights}
         onEditInsight={openEditModal}
-        onDeleteInsight={removeInsight}
+        onDeleteInsight={openDeleteModal}
       />
     </main>
   );

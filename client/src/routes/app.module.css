@@ -9,3 +9,16 @@
 .insights {
   margin-top: var(--size-10);
 }
+
+.dialogText {
+  margin: 0;
+  font: var(--text-md);
+  color: var(--color-text);
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--size-3);
+  margin-top: var(--size-6);
+}
