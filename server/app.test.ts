@@ -84,6 +84,124 @@ describe("createApp", () => {
       });
     });
 
+    describe("lookup missing insight", () => {
+      withDB((fixture) => {
+        const app = createApp(fixture);
+        let response: Response;
+        let body: unknown;
+
+        beforeAll(async () => {
+          response = await app.fetch(
+            new Request(`${BASE_URL}/insights/999`),
+            TEST_ENV,
+            TEST_CTX,
+          );
+          body = await response.json();
+        });
+
+        it("returns 404", () => {
+          expect(response.status).toBe(404);
+        });
+
+        it("returns not found error", () => {
+          expect(body).toEqual({ error: "Not found" });
+        });
+      });
+    });
+
+    describe("create with invalid JSON", () => {
+      withDB((fixture) => {
+        const app = createApp(fixture);
+        let response: Response;
+        let body: unknown;
+
+        beforeAll(async () => {
+          response = await app.fetch(
+            new Request(`${BASE_URL}/insights`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: "{invalid-json",
+            }),
+            TEST_ENV,
+            TEST_CTX,
+          );
+          body = await response.json();
+        });
+
+        it("returns 400", () => {
+          expect(response.status).toBe(400);
+        });
+
+        it("returns invalid JSON error", () => {
+          expect(body).toEqual({ error: "Invalid JSON" });
+        });
+      });
+    });
+
+    describe("create with invalid payload", () => {
+      withDB((fixture) => {
+        const app = createApp(fixture);
+        let response: Response;
+        let body: unknown;
+
+        beforeAll(async () => {
+          response = await app.fetch(
+            new Request(`${BASE_URL}/insights`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ brand: 1, text: "" }),
+            }),
+            TEST_ENV,
+            TEST_CTX,
+          );
+          body = await response.json();
+        });
+
+        it("returns 400", () => {
+          expect(response.status).toBe(400);
+        });
+
+        it("returns validation issues", () => {
+          expect(body).toMatchObject({
+            error: [
+              {
+                path: ["text"],
+              },
+            ],
+          });
+        });
+      });
+    });
+
+    describe("create with unknown brand", () => {
+      withDB((fixture) => {
+        const app = createApp(fixture);
+        let response: Response;
+        let body: unknown;
+
+        beforeAll(async () => {
+          response = await app.fetch(
+            new Request(`${BASE_URL}/insights`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ brand: 999, text: "Unknown brand" }),
+            }),
+            TEST_ENV,
+            TEST_CTX,
+          );
+          body = await response.json();
+        });
+
+        it("returns 500", () => {
+          expect(response.status).toBe(500);
+        });
+
+        it("returns create error", () => {
+          expect(body).toEqual({ error: "Failed to create insight" });
+        });
+      });
+    });
+
     describe("create and delete flow", () => {
       withDB((fixture) => {
         const app = createApp(fixture);
@@ -128,6 +246,33 @@ describe("createApp", () => {
         it("deletes the insight with 200", () => {
           expect(deleteResponse.status).toBe(200);
           expect(deleteBody).toEqual({ id: createdBody.id });
+        });
+      });
+    });
+
+    describe("delete missing insight", () => {
+      withDB((fixture) => {
+        const app = createApp(fixture);
+        let response: Response;
+        let body: unknown;
+
+        beforeAll(async () => {
+          response = await app.fetch(
+            new Request(`${BASE_URL}/insights/999`, {
+              method: "DELETE",
+            }),
+            TEST_ENV,
+            TEST_CTX,
+          );
+          body = await response.json();
+        });
+
+        it("returns 404", () => {
+          expect(response.status).toBe(404);
+        });
+
+        it("returns not found error", () => {
+          expect(body).toEqual({ error: "Not found" });
         });
       });
     });
