@@ -23,7 +23,7 @@ describe("insights", () => {
       <Insights
         brands={TEST_BRANDS}
         insights={TEST_INSIGHTS}
-        removeInsight={() => {}}
+        onDeleteInsight={(id) => Promise.resolve(id)}
       />,
     );
     expect(getByText(TEST_INSIGHTS[0].text)).toBeTruthy();

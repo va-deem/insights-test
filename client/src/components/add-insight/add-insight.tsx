@@ -2,19 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "../button/button.tsx";
 import { Modal, type ModalProps } from "../modal/modal.tsx";
 import styles from "./add-insight.module.css";
-import {
-  type Brand,
-  type InsertInsight,
-  Insight,
-} from "../../schemas/insight.ts";
+import type { Brand, InsertInsight } from "../../schemas/insight.ts";
 
 type AddInsightProps = {
-  addNewInsight: (newInsight: Insight) => void;
+  onAddInsight: (input: InsertInsight) => Promise<void>;
   brands: Brand[];
 } & ModalProps;
 
 export const AddInsight = (props: AddInsightProps) => {
-  const { addNewInsight, brands, onClose, ...modalProps } = props;
+  const { onAddInsight, brands, onClose, ...modalProps } = props;
 
   const [brand, setBrand] = useState<number>(brands[0]?.id ?? 0);
   const [text, setText] = useState("");
@@ -32,7 +28,7 @@ export const AddInsight = (props: AddInsightProps) => {
     onClose();
   };
 
-  const addInsight = (e: React.FormEvent<HTMLFormElement>) => {
+  const addInsight = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const insightInput: InsertInsight = {
@@ -40,31 +36,16 @@ export const AddInsight = (props: AddInsightProps) => {
       text: text.trim(),
     };
 
-    fetch("/api/insights", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(insightInput),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          return res.json().then((data) => {
-            throw new Error(
-              data.error?.[0]?.message ?? "Failed to add insight",
-            );
-          });
-        }
-        return res.json();
-      })
-      .then((data) => {
-        addNewInsight(Insight.parse(data));
-        setBrand(brands[0]?.id ?? 0);
-        setText("");
-        handleClose();
-      })
-      .catch((err) => {
-        setError(err.message);
-        textRef.current?.focus();
-      });
+    try {
+      await onAddInsight(insightInput);
+
+      setBrand(brands[0]?.id ?? 0);
+      setText("");
+      handleClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add insight");
+      textRef.current?.focus();
+    }
   };
 
   const handleSelectBrand = (e: React.ChangeEvent<HTMLSelectElement>) => {

@@ -6,7 +6,7 @@ import type { Brand, Insight } from "../../schemas/insight.ts";
 type InsightsProps = {
   brands: Brand[];
   insights: Insight[];
-  removeInsight: (insight: number) => void;
+  onDeleteInsight: (id: Insight["id"]) => Promise<Insight["id"]>;
   className?: string;
 };
 
@@ -14,18 +14,14 @@ const getBrandName = (brands: Brand[], id: number) =>
   brands.find((i) => i.id === id)?.name;
 
 export const Insights = (
-  { brands, insights, removeInsight, className }: InsightsProps,
+  { brands, insights, onDeleteInsight, className }: InsightsProps,
 ) => {
-  const deleteInsight = (id: number) => {
-    fetch(`/api/insights/${id}`, { method: "DELETE" })
-      .then((res) => {
-        if (res.ok) {
-          removeInsight(id);
-        }
-      })
-      .catch(() => {
-        console.error("Failed to delete insight with id", id);
-      });
+  const deleteInsight = async (id: number) => {
+    try {
+      await onDeleteInsight(id);
+    } catch (_err) {
+      console.error("Failed to delete insight with id", id);
+    }
   };
 
   return (

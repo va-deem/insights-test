@@ -10,7 +10,7 @@ describe("add-insight", () => {
       <AddInsight
         open
         onClose={() => {}}
-        addNewInsight={() => {}}
+        onAddInsight={async () => {}}
         brands={TEST_BRANDS}
       />,
     );

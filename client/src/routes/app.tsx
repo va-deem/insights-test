@@ -1,44 +1,56 @@
 import { useEffect, useState } from "react";
+import { listBrands } from "../http/brands.ts";
+import {
+  createInsight as createInsightRequest,
+  deleteInsight as deleteInsightRequest,
+  listInsights,
+} from "../http/insights.ts";
 import { Header } from "../components/header/header.tsx";
 import { Insights } from "../components/insights/insights.tsx";
 import styles from "./app.module.css";
-import { Brand, Insight } from "../schemas/insight.ts";
+import type { Brand, InsertInsight, Insight } from "../schemas/insight.ts";
 
 export const App = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
 
   useEffect(() => {
-    fetch(`/api/brands`)
-      .then((res) => res.json())
-      .then((res) => {
-        setBrands(res.map((item: unknown) => Brand.parse(item)));
-      })
-      .catch((err) => console.error(err));
+    const loadData = async () => {
+      try {
+        setBrands(await listBrands());
+      } catch (err) {
+        console.error(err);
+      }
 
-    fetch(`/api/insights`)
-      .then((res) => res.json())
-      .then((res) => {
-        setInsights(res.map((item: unknown) => Insight.parse(item)));
-      })
-      .catch((err) => console.error(err));
+      try {
+        setInsights(await listInsights());
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    void loadData();
   }, []);
 
-  const addNewInsight = (newInsight: Insight) => {
+  const addNewInsight = async (input: InsertInsight) => {
+    const newInsight = await createInsightRequest(input);
     setInsights((prev) => [...prev, newInsight]);
   };
-  const removeInsight = (id: Insight["id"]) => {
-    setInsights((prev) => prev.filter((i) => i.id !== id));
+
+  const removeInsight = async (id: Insight["id"]) => {
+    const deletedId = await deleteInsightRequest(id);
+    setInsights((prev) => prev.filter((i) => i.id !== deletedId));
+    return deletedId;
   };
 
   return (
     <main className={styles.main}>
-      <Header addNewInsight={addNewInsight} brands={brands} />
+      <Header onAddInsight={addNewInsight} brands={brands} />
       <Insights
         className={styles.insights}
         brands={brands}
         insights={insights}
-        removeInsight={removeInsight}
+        onDeleteInsight={removeInsight}
       />
     </main>
   );

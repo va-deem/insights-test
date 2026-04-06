@@ -7,7 +7,7 @@ const TEST_BRANDS = [{ id: 1, name: "Brand 1" }];
 describe("header", () => {
   it("renders", () => {
     const { getByText } = render(
-      <Header addNewInsight={() => {}} brands={TEST_BRANDS} />,
+      <Header onAddInsight={async () => {}} brands={TEST_BRANDS} />,
     );
     expect(getByText(HEADER_TEXT)).toBeTruthy();
   });
