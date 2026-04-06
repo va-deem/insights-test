@@ -1,4 +1,4 @@
-import { Trash2Icon } from "lucide-react";
+import { PencilIcon, Trash2Icon } from "lucide-react";
 import { cx } from "../../lib/cx.ts";
 import styles from "./insights.module.css";
 import type { Brand, Insight } from "../../schemas/insight.ts";
@@ -22,12 +22,7 @@ export const Insights = (
   { brands, isError, insights, onDeleteInsight, onEditInsight, className }:
     InsightsProps,
 ) => {
-  const deleteInsight = async (
-    event: React.MouseEvent<SVGSVGElement>,
-    id: number,
-  ) => {
-    event.stopPropagation();
-
+  const deleteInsight = async (id: number) => {
     try {
       await onDeleteInsight(id);
     } catch (_err) {
@@ -47,25 +42,39 @@ export const Insights = (
           )
           : insights?.length
           ? (
-            insights.map(({ id, text, createdAt, brand }) => (
-              <div
-                className={styles.insight}
-                key={id}
-                onClick={() => onEditInsight({ id, text, createdAt, brand })}
-              >
-                <div className={styles["insight-meta"]}>
-                  <span>{getBrandName(brands, brand)}</span>
-                  <div className={styles["insight-meta-details"]}>
-                    <span>{formatIsoDate(createdAt)}</span>
-                    <Trash2Icon
-                      className={styles["insight-delete"]}
-                      onClick={(event) => deleteInsight(event, id)}
-                    />
+            <ul className={styles.items}>
+              {insights.map(({ id, text, createdAt, brand }) => (
+                <li className={styles.insight} key={id}>
+                  <div className={styles["insight-meta"]}>
+                    <span>{getBrandName(brands, brand)}</span>
+                    <div className={styles["insight-meta-details"]}>
+                      <span>{formatIsoDate(createdAt)}</span>
+                      <div className={styles.actions}>
+                        <button
+                          type="button"
+                          className={styles.action}
+                          onClick={() =>
+                            onEditInsight({ id, text, createdAt, brand })}
+                          aria-label={`Edit insight: ${text}`}
+                        >
+                          <PencilIcon className={styles.actionIcon} />
+                        </button>
+                        <button
+                          type="button"
+                          className={cx(styles.action, styles.delete)}
+                          onClick={() =>
+                            deleteInsight(id)}
+                          aria-label={`Delete insight: ${text}`}
+                        >
+                          <Trash2Icon className={styles.actionIcon} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <p className={styles["insight-content"]}>{text}</p>
-              </div>
-            ))
+                  <p className={styles["insight-content"]}>{text}</p>
+                </li>
+              ))}
+            </ul>
           )
           : <p>We have no insight!</p>}
       </div>

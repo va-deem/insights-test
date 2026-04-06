@@ -24,7 +24,7 @@ const TEST_INSIGHTS = [
 
 describe("insights", () => {
   it("renders", () => {
-    const { getByText } = render(
+    const { getByLabelText, getByText } = render(
       <Insights
         brands={TEST_BRANDS}
         insights={TEST_INSIGHTS}
@@ -33,6 +33,8 @@ describe("insights", () => {
       />,
     );
     expect(getByText(TEST_INSIGHTS[0].text)).toBeTruthy();
+    expect(getByLabelText(`Edit insight: ${TEST_INSIGHTS[0].text}`))
+      .toBeTruthy();
   });
 
   it("renders error instead of empty state", () => {
