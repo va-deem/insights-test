@@ -11,10 +11,15 @@ const TEST_INSIGHTS = [
   {
     id: 1,
     brand: 1,
-    createdAt: new Date(),
+    createdAt: new Date().toISOString(),
     text: "Test insight",
   },
-  { id: 2, brand: 2, createdAt: new Date(), text: "Another test insight" },
+  {
+    id: 2,
+    brand: 2,
+    createdAt: new Date().toISOString(),
+    text: "Another test insight",
+  },
 ];
 
 describe("insights", () => {
@@ -27,5 +32,20 @@ describe("insights", () => {
       />,
     );
     expect(getByText(TEST_INSIGHTS[0].text)).toBeTruthy();
+  });
+
+  it("renders error instead of empty state", () => {
+    const { getByText, queryByText } = render(
+      <Insights
+        brands={TEST_BRANDS}
+        isError
+        insights={[]}
+        onDeleteInsight={(id) => Promise.resolve(id)}
+      />,
+    );
+
+    expect(getByText("Something went wrong while loading insights."))
+      .toBeTruthy();
+    expect(queryByText("We have no insight!")).toBeNull();
   });
 });

@@ -1,5 +1,6 @@
 import { expect } from "@std/expect";
 import { beforeAll, describe, it } from "@std/testing/bdd";
+import { z } from "zod";
 import type { Insight } from "$models/insight.ts";
 import { withDB } from "../testing.ts";
 import listInsights from "./list-insights.ts";
@@ -44,7 +45,9 @@ describe("listing insights in the database", () => {
         for (let i = 0; i < inputs.length; i++) {
           expect(result[i].brand).toBe(inputs[i].brand);
           expect(result[i].text).toBe(inputs[i].text);
-          expect(result[i].createdAt).toBeInstanceOf(Date);
+          expect(z.string().datetime().parse(result[i].createdAt)).toBe(
+            result[i].createdAt,
+          );
         }
       });
     });

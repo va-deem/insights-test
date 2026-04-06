@@ -3,8 +3,8 @@ import { z } from "zod";
 import { InsertInsight } from "$models/insight.ts";
 import {
   BadRequestError,
-  NotFoundError,
   internalServerError,
+  NotFoundError,
 } from "../errors.ts";
 import createInsight from "../operations/create-insight.ts";
 import deleteInsight from "../operations/delete-insight.ts";

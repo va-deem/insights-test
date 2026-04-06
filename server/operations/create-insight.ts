@@ -12,7 +12,7 @@ export default (input: Input, item: InsertInsight): Insight => {
   >`INSERT INTO insights (brand, text)
     VALUES (${item.brand}, ${item.text}) RETURNING *`)[0];
 
-  const result: Insight = { ...row, createdAt: new Date(row.createdAt) };
+  const result: Insight = row;
 
   console.log("Created insight successfully: ", result);
   return result;

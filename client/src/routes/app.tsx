@@ -13,6 +13,7 @@ import type { Brand, InsertInsight, Insight } from "../schemas/insight.ts";
 export const App = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
+  const [isInsightError, setIsInsightError] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -24,8 +25,10 @@ export const App = () => {
 
       try {
         setInsights(await listInsights());
+        setIsInsightError(false);
       } catch (err) {
         console.error(err);
+        setIsInsightError(true);
       }
     };
 
@@ -35,6 +38,7 @@ export const App = () => {
   const addNewInsight = async (input: InsertInsight) => {
     const newInsight = await createInsightRequest(input);
     setInsights((prev) => [...prev, newInsight]);
+    setIsInsightError(false);
   };
 
   const removeInsight = async (id: Insight["id"]) => {
@@ -49,6 +53,7 @@ export const App = () => {
       <Insights
         className={styles.insights}
         brands={brands}
+        isError={isInsightError}
         insights={insights}
         onDeleteInsight={removeInsight}
       />

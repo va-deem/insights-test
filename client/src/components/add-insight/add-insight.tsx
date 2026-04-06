@@ -42,8 +42,8 @@ export const AddInsight = (props: AddInsightProps) => {
       setBrand(brands[0]?.id ?? 0);
       setText("");
       handleClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add insight");
+    } catch {
+      setError("Failed to add insight");
       textRef.current?.focus();
     }
   };

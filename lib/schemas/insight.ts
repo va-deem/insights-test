@@ -3,7 +3,7 @@ import { z } from "zod";
 export const Insight = z.object({
   id: z.number().int().min(0),
   brand: z.number().int().min(1),
-  createdAt: z.coerce.date(),
+  createdAt: z.string().datetime(),
   text: z.string(),
 });
 

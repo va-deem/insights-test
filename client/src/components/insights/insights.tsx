@@ -5,6 +5,7 @@ import type { Brand, Insight } from "../../schemas/insight.ts";
 
 type InsightsProps = {
   brands: Brand[];
+  isError?: boolean;
   insights: Insight[];
   onDeleteInsight: (id: Insight["id"]) => Promise<Insight["id"]>;
   className?: string;
@@ -13,8 +14,11 @@ type InsightsProps = {
 const getBrandName = (brands: Brand[], id: number) =>
   brands.find((i) => i.id === id)?.name;
 
+const formatIsoDate = (value: Insight["createdAt"]) =>
+  new Date(value).toLocaleString();
+
 export const Insights = (
-  { brands, insights, onDeleteInsight, className }: InsightsProps,
+  { brands, isError, insights, onDeleteInsight, className }: InsightsProps,
 ) => {
   const deleteInsight = async (id: number) => {
     try {
@@ -28,14 +32,20 @@ export const Insights = (
     <div className={cx(className)}>
       <h1 className={styles.heading}>Insights</h1>
       <div className={styles.list}>
-        {insights?.length
+        {isError
+          ? (
+            <p className={styles.error}>
+              Something went wrong while loading insights.
+            </p>
+          )
+          : insights?.length
           ? (
             insights.map(({ id, text, createdAt, brand }) => (
               <div className={styles.insight} key={id}>
                 <div className={styles["insight-meta"]}>
                   <span>{getBrandName(brands, brand)}</span>
                   <div className={styles["insight-meta-details"]}>
-                    <span>{createdAt.toString()}</span>
+                    <span>{formatIsoDate(createdAt)}</span>
                     <Trash2Icon
                       className={styles["insight-delete"]}
                       onClick={() =>

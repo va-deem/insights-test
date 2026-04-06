@@ -1,5 +1,6 @@
 import { expect } from "@std/expect";
 import { beforeAll, describe, it } from "@std/testing/bdd";
+import { z } from "zod";
 import type { Insight } from "$models/insight.ts";
 import { withDB } from "../testing.ts";
 import createInsight from "./create-insight.ts";
@@ -22,7 +23,9 @@ describe("creating an insight in the database", () => {
         expect(result.id).toBe(1);
         expect(result.brand).toBe(input.brand);
         expect(result.text).toBe(input.text);
-        expect(result.createdAt).toBeInstanceOf(Date);
+        expect(z.string().datetime().parse(result.createdAt)).toBe(
+          result.createdAt,
+        );
       });
 
       it("persists the insight in the DB", () => {

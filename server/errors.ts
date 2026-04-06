@@ -44,7 +44,7 @@ export class InternalServerError extends HttpError {
   constructor(
     body: ErrorBody,
     message = "Internal server error",
-      options?: { cause?: unknown },
+    options?: { cause?: unknown },
   ) {
     super(500, body, message, options);
   }

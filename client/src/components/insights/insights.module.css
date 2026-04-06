@@ -9,6 +9,12 @@
   margin-top: var(--size-6);
 }
 
+.error {
+  font: var(--text-sm);
+  color: var(--color-red-500);
+  margin: 0;
+}
+
 .insight {
   padding: var(--size-4);
   border-radius: var(--radius-lg);
