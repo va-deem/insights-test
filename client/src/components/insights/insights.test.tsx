@@ -28,6 +28,7 @@ describe("insights", () => {
       <Insights
         brands={TEST_BRANDS}
         insights={TEST_INSIGHTS}
+        onEditInsight={() => {}}
         onDeleteInsight={(id) => Promise.resolve(id)}
       />,
     );
@@ -40,6 +41,7 @@ describe("insights", () => {
         brands={TEST_BRANDS}
         isError
         insights={[]}
+        onEditInsight={() => {}}
         onDeleteInsight={(id) => Promise.resolve(id)}
       />,
     );

@@ -7,6 +7,7 @@ type InsightsProps = {
   brands: Brand[];
   isError?: boolean;
   insights: Insight[];
+  onEditInsight: (insight: Insight) => void;
   onDeleteInsight: (id: Insight["id"]) => Promise<Insight["id"]>;
   className?: string;
 };
@@ -18,9 +19,15 @@ const formatIsoDate = (value: Insight["createdAt"]) =>
   new Date(value).toLocaleString();
 
 export const Insights = (
-  { brands, isError, insights, onDeleteInsight, className }: InsightsProps,
+  { brands, isError, insights, onDeleteInsight, onEditInsight, className }:
+    InsightsProps,
 ) => {
-  const deleteInsight = async (id: number) => {
+  const deleteInsight = async (
+    event: React.MouseEvent<SVGSVGElement>,
+    id: number,
+  ) => {
+    event.stopPropagation();
+
     try {
       await onDeleteInsight(id);
     } catch (_err) {
@@ -41,15 +48,18 @@ export const Insights = (
           : insights?.length
           ? (
             insights.map(({ id, text, createdAt, brand }) => (
-              <div className={styles.insight} key={id}>
+              <div
+                className={styles.insight}
+                key={id}
+                onClick={() => onEditInsight({ id, text, createdAt, brand })}
+              >
                 <div className={styles["insight-meta"]}>
                   <span>{getBrandName(brands, brand)}</span>
                   <div className={styles["insight-meta-details"]}>
                     <span>{formatIsoDate(createdAt)}</span>
                     <Trash2Icon
                       className={styles["insight-delete"]}
-                      onClick={() =>
-                        deleteInsight(id)}
+                      onClick={(event) => deleteInsight(event, id)}
                     />
                   </div>
                 </div>

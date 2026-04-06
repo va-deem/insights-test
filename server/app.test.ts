@@ -275,6 +275,57 @@ describe("createApp", () => {
       });
     });
 
+    describe("update flow", () => {
+      withDB((fixture) => {
+        const app = createApp(fixture);
+        let createResponse: Response;
+        let updateResponse: Response;
+        let createdBody: {
+          id: number;
+          brand: number;
+          createdAt: string;
+          text: string;
+        };
+        let updatedBody: {
+          id: number;
+          brand: number;
+          createdAt: string;
+          text: string;
+        };
+
+        beforeAll(async () => {
+          createResponse = await app.fetch(
+            new Request(`${BASE_URL}/insights`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ brand: 1, text: "Created via app test" }),
+            }),
+            TEST_ENV,
+            TEST_CTX,
+          );
+          createdBody = await createResponse.json();
+
+          updateResponse = await app.fetch(
+            new Request(`${BASE_URL}/insights/${createdBody.id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ brand: 2, text: "Updated via app test" }),
+            }),
+            TEST_ENV,
+            TEST_CTX,
+          );
+          updatedBody = await updateResponse.json();
+        });
+
+        it("updates an insight with 200", () => {
+          expect(updateResponse.status).toBe(200);
+          expect(updatedBody.id).toBe(createdBody.id);
+          expect(updatedBody.brand).toBe(2);
+          expect(updatedBody.text).toBe("Updated via app test");
+        });
+      });
+    });
+
     describe("delete missing insight", () => {
       withDB((fixture) => {
         const app = createApp(fixture);

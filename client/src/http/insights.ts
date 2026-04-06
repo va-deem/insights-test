@@ -46,3 +46,22 @@ export async function deleteInsight(id: Insight["id"]): Promise<Insight["id"]> {
   const body = await response.json();
   return body.id;
 }
+
+export async function updateInsight(
+  id: Insight["id"],
+  input: InsertInsight,
+): Promise<Insight> {
+  const response = await fetch(`/api/insights/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      await parseErrorMessage(response, "Failed to update insight"),
+    );
+  }
+
+  return Insight.parse(await response.json());
+}

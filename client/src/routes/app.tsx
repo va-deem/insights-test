@@ -4,7 +4,9 @@ import {
   createInsight as createInsightRequest,
   deleteInsight as deleteInsightRequest,
   listInsights,
+  updateInsight as updateInsightRequest,
 } from "../http/insights.ts";
+import { InsightForm } from "../components/insight-form/insight-form.tsx";
 import { Header } from "../components/header/header.tsx";
 import { Insights } from "../components/insights/insights.tsx";
 import styles from "./app.module.css";
@@ -14,6 +16,8 @@ export const App = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
   const [isInsightError, setIsInsightError] = useState(false);
+  const [editedInsight, setEditedInsight] = useState<Insight | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -35,9 +39,37 @@ export const App = () => {
     void loadData();
   }, []);
 
-  const addNewInsight = async (input: InsertInsight) => {
-    const newInsight = await createInsightRequest(input);
-    setInsights((prev) => [...prev, newInsight]);
+  const openCreateModal = () => {
+    setEditedInsight(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (insight: Insight) => {
+    setEditedInsight(insight);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setEditedInsight(null);
+    setIsModalOpen(false);
+  };
+
+  const saveInsight = async (input: InsertInsight) => {
+    if (editedInsight) {
+      const updatedInsight = await updateInsightRequest(
+        editedInsight.id,
+        input,
+      );
+      setInsights((prev) =>
+        prev.map((item) =>
+          item.id === updatedInsight.id ? updatedInsight : item
+        )
+      );
+    } else {
+      const newInsight = await createInsightRequest(input);
+      setInsights((prev) => [...prev, newInsight]);
+    }
+
     setIsInsightError(false);
   };
 
@@ -49,12 +81,20 @@ export const App = () => {
 
   return (
     <main className={styles.main}>
-      <Header onAddInsight={addNewInsight} brands={brands} />
+      <Header onAddInsightClick={openCreateModal} />
+      <InsightForm
+        open={isModalOpen}
+        onClose={closeModal}
+        insight={editedInsight}
+        onSubmitInsight={saveInsight}
+        brands={brands}
+      />
       <Insights
         className={styles.insights}
         brands={brands}
         isError={isInsightError}
         insights={insights}
+        onEditInsight={openEditModal}
         onDeleteInsight={removeInsight}
       />
     </main>

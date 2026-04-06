@@ -1,34 +1,43 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../button/button.tsx";
 import { Modal, type ModalProps } from "../modal/modal.tsx";
-import styles from "./add-insight.module.css";
-import type { Brand, InsertInsight } from "../../schemas/insight.ts";
+import styles from "./insight-form.module.css";
+import type { Brand, InsertInsight, Insight } from "../../schemas/insight.ts";
 
-type AddInsightProps = {
-  onAddInsight: (input: InsertInsight) => Promise<void>;
+type InsightFormProps = {
+  insight?: Insight | null;
+  onSubmitInsight: (input: InsertInsight) => Promise<void>;
   brands: Brand[];
 } & ModalProps;
 
-export const AddInsight = (props: AddInsightProps) => {
-  const { onAddInsight, brands, onClose, ...modalProps } = props;
+export const InsightForm = (props: InsightFormProps) => {
+  const { insight, onSubmitInsight, brands, open, onClose, ...modalProps } =
+    props;
+  const isEditing = insight !== null && insight !== undefined;
 
-  const [brand, setBrand] = useState<number>(brands[0]?.id ?? 0);
-  const [text, setText] = useState("");
+  const [brand, setBrand] = useState<number>(
+    insight?.brand ?? brands[0]?.id ?? 0,
+  );
+  const [text, setText] = useState(insight?.text ?? "");
   const [error, setError] = useState<string | null>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (brands.length > 0 && !brands.some(({ id }) => id === brand)) {
-      setBrand(brands[0].id);
+    if (!open) {
+      return;
     }
-  }, [brand, brands]);
+
+    setBrand(insight?.brand ?? brands[0]?.id ?? 0);
+    setText(insight?.text ?? "");
+    setError(null);
+  }, [brands, insight, open]);
 
   const handleClose = () => {
     setError(null);
     onClose();
   };
 
-  const addInsight = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitInsight = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const insightInput: InsertInsight = {
@@ -37,13 +46,15 @@ export const AddInsight = (props: AddInsightProps) => {
     };
 
     try {
-      await onAddInsight(insightInput);
+      await onSubmitInsight(insightInput);
 
       setBrand(brands[0]?.id ?? 0);
       setText("");
       handleClose();
     } catch {
-      setError("Failed to add insight");
+      setError(
+        isEditing ? "Failed to update insight" : "Failed to add insight",
+      );
       textRef.current?.focus();
     }
   };
@@ -59,9 +70,11 @@ export const AddInsight = (props: AddInsightProps) => {
   };
 
   return (
-    <Modal {...modalProps} onClose={handleClose}>
-      <h1 className={styles.heading}>Add a new insight</h1>
-      <form className={styles.form} onSubmit={addInsight}>
+    <Modal {...modalProps} open={open} onClose={handleClose}>
+      <h1 className={styles.heading}>
+        {isEditing ? "Edit insight" : "Add a new insight"}
+      </h1>
+      <form className={styles.form} onSubmit={submitInsight}>
         <label className={styles.field}>
           <select
             className={styles["field-input"]}
@@ -86,7 +99,11 @@ export const AddInsight = (props: AddInsightProps) => {
           />
         </label>
         {error && <p className={styles.error}>{error}</p>}
-        <Button className={styles.submit} type="submit" label="Add insight" />
+        <Button
+          className={styles.submit}
+          type="submit"
+          label={isEditing ? "Save insight" : "Add insight"}
+        />
       </form>
     </Modal>
   );
