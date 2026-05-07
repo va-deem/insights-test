@@ -1,7 +1,7 @@
 import { expect } from "@std/expect";
 import { beforeAll, describe, it } from "@std/testing/bdd";
 import { withDB } from "../testing.ts";
-import deleteInsight from "./delete-insight.ts";
+import { deleteInsight } from "./delete-insight.ts";
 
 describe("deleting an insight from the database", () => {
   describe("insight exists", () => {
@@ -10,9 +10,9 @@ describe("deleting an insight from the database", () => {
 
       beforeAll(() => {
         fixture.insights.insert([
-          { brand: 0, createdAt: new Date().toISOString(), text: "1" },
-          { brand: 1, createdAt: new Date().toISOString(), text: "2" },
-          { brand: 2, createdAt: new Date().toISOString(), text: "3" },
+          { brand: 1, text: "1" },
+          { brand: 2, text: "2" },
+          { brand: 3, text: "3" },
         ]);
         result = deleteInsight(fixture, 2);
       });

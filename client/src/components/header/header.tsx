@@ -1,35 +1,23 @@
-import { useState } from "react";
 import { Button } from "../button/button.tsx";
 import styles from "./header.module.css";
-import { AddInsight } from "../add-insight/add-insight.tsx";
-import type { Insight } from "../../schemas/insight.ts";
 
 export const HEADER_TEXT = "Suit Tracker Insights";
 
 type HeaderProps = {
-  addNewInsight: (newInsight: Insight) => void;
+  onAddInsightClick: () => void;
 };
 
-export const Header = ({ addNewInsight }: HeaderProps) => {
-  const [addInsightOpen, setAddInsightOpen] = useState(false);
-
+export const Header = ({ onAddInsightClick }: HeaderProps) => {
   return (
-    <>
-      <header className={styles.header}>
-        <div className={styles.inner}>
-          <span className={styles.logo}>{HEADER_TEXT}</span>
-          <Button
-            label="Add insight"
-            theme="secondary"
-            onClick={() => setAddInsightOpen(true)}
-          />
-        </div>
-      </header>
-      <AddInsight
-        open={addInsightOpen}
-        onClose={() => setAddInsightOpen(false)}
-        addNewInsight={addNewInsight}
-      />
-    </>
+    <header className={styles.header}>
+      <div className={styles.inner}>
+        <span className={styles.logo}>{HEADER_TEXT}</span>
+        <Button
+          label="Add insight"
+          theme="secondary"
+          onClick={onAddInsightClick}
+        />
+      </div>
+    </header>
   );
 };

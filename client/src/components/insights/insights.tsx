@@ -1,54 +1,72 @@
-import { Trash2Icon } from "lucide-react";
+import { PencilIcon, Trash2Icon } from "lucide-react";
 import { cx } from "../../lib/cx.ts";
 import styles from "./insights.module.css";
-import type { Insight } from "../../schemas/insight.ts";
-import { BRANDS } from "../../lib/consts.ts";
+import type { Brand, Insight } from "../../schemas/insight.ts";
 
 type InsightsProps = {
+  brands: Brand[];
+  isError?: boolean;
   insights: Insight[];
-  removeInsight: (insight: number) => void;
+  onEditInsight: (insight: Insight) => void;
+  onDeleteInsight: (insight: Insight) => void;
   className?: string;
 };
 
-const getBrandName = (id: number) => BRANDS.find((i) => i.id === id)?.name;
+const getBrandName = (brands: Brand[], id: number) =>
+  brands.find((i) => i.id === id)?.name;
+
+const formatIsoDate = (value: Insight["createdAt"]) =>
+  new Date(value).toLocaleString();
 
 export const Insights = (
-  { insights, removeInsight, className }: InsightsProps,
+  { brands, isError, insights, onDeleteInsight, onEditInsight, className }:
+    InsightsProps,
 ) => {
-  const deleteInsight = (id: number) => {
-    fetch(`/api/insights/${id}`, { method: "DELETE" })
-      .then((res) => {
-        if (res.ok) {
-          removeInsight(id);
-        }
-      })
-      .catch(() => {
-        console.error("Failed to delete insight with id", id);
-      });
-  };
-
   return (
     <div className={cx(className)}>
       <h1 className={styles.heading}>Insights</h1>
       <div className={styles.list}>
-        {insights?.length
+        {isError
           ? (
-            insights.map(({ id, text, createdAt, brand }) => (
-              <div className={styles.insight} key={id}>
-                <div className={styles["insight-meta"]}>
-                  <span>{getBrandName(brand)}</span>
-                  <div className={styles["insight-meta-details"]}>
-                    <span>{createdAt.toString()}</span>
-                    <Trash2Icon
-                      className={styles["insight-delete"]}
-                      onClick={() =>
-                        deleteInsight(id)}
-                    />
+            <p className={styles.error}>
+              Something went wrong while loading insights.
+            </p>
+          )
+          : insights?.length
+          ? (
+            <ul className={styles.items}>
+              {insights.map((insight) => (
+                <li className={styles.insight} key={insight.id}>
+                  <div className={styles["insight-meta"]}>
+                    <span>{getBrandName(brands, insight.brand)}</span>
+                    <div className={styles["insight-meta-details"]}>
+                      <span>{formatIsoDate(insight.createdAt)}</span>
+                      <div className={styles.actions}>
+                        <button
+                          type="button"
+                          className={styles.action}
+                          onClick={() =>
+                            onEditInsight(insight)}
+                          aria-label={`Edit insight: ${insight.text}`}
+                        >
+                          <PencilIcon className={styles.actionIcon} />
+                        </button>
+                        <button
+                          type="button"
+                          className={cx(styles.action, styles.delete)}
+                          onClick={() =>
+                            onDeleteInsight(insight)}
+                          aria-label={`Delete insight: ${insight.text}`}
+                        >
+                          <Trash2Icon className={styles.actionIcon} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <p className={styles["insight-content"]}>{text}</p>
-              </div>
-            ))
+                  <p className={styles["insight-content"]}>{insight.text}</p>
+                </li>
+              ))}
+            </ul>
           )
           : <p>We have no insight!</p>}
       </div>

@@ -6,7 +6,7 @@ type Input = HasDBClient & {
   id: number;
 };
 
-export default (input: Input): Insight | undefined => {
+export const lookupInsight = (input: Input): Insight | undefined => {
   console.log(`Looking up insight for id=${input.id}`);
 
   const [row] = input.db
@@ -15,7 +15,7 @@ export default (input: Input): Insight | undefined => {
   >`SELECT * FROM insights WHERE id = ${input.id} LIMIT 1`;
 
   if (row) {
-    const result = { ...row, createdAt: new Date(row.createdAt) };
+    const result: Insight = row;
     console.log("Insight retrieved:", result);
     return result;
   }

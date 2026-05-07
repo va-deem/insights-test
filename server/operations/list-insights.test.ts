@@ -1,8 +1,9 @@
 import { expect } from "@std/expect";
 import { beforeAll, describe, it } from "@std/testing/bdd";
+import { z } from "zod";
 import type { Insight } from "$models/insight.ts";
 import { withDB } from "../testing.ts";
-import listInsights from "./list-insights.ts";
+import { listInsights } from "./list-insights.ts";
 
 describe("listing insights in the database", () => {
   describe("nothing in the DB", () => {
@@ -21,22 +22,17 @@ describe("listing insights in the database", () => {
 
   describe("populated DB", () => {
     withDB((fixture) => {
-      const insights: Insight[] = [
-        { id: 1, brand: 0, createdAt: new Date(), text: "1" },
-        { id: 2, brand: 0, createdAt: new Date(), text: "2" },
-        { id: 3, brand: 1, createdAt: new Date(), text: "3" },
-        { id: 4, brand: 4, createdAt: new Date(), text: "4" },
+      const inputs = [
+        { brand: 1, text: "1" },
+        { brand: 2, text: "2" },
+        { brand: 3, text: "3" },
+        { brand: 4, text: "4" },
       ];
 
       let result: Insight[];
 
       beforeAll(() => {
-        fixture.insights.insert(
-          insights.map((it) => ({
-            ...it,
-            createdAt: it.createdAt.toISOString(),
-          })),
-        );
+        fixture.insights.insert(inputs);
         result = listInsights(fixture);
       });
 
@@ -45,7 +41,14 @@ describe("listing insights in the database", () => {
       });
 
       it("returns all insights in the DB", () => {
-        expect(result).toEqual(insights);
+        expect(result).toHaveLength(inputs.length);
+        for (let i = 0; i < inputs.length; i++) {
+          expect(result[i].brand).toBe(inputs[i].brand);
+          expect(result[i].text).toBe(inputs[i].text);
+          expect(z.string().datetime().parse(result[i].createdAt)).toBe(
+            result[i].createdAt,
+          );
+        }
       });
     });
   });

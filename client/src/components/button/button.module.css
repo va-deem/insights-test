@@ -2,11 +2,15 @@
   font: var(--text-sm);
   line-height: var(--line-none);
   border-radius: var(--radius-full);
+  outline: none;
   text-align: center;
   padding: var(--size-3) var(--size-5);
   font-weight: var(--weight-semibold);
   cursor: pointer;
   transition: color 250ms ease, background 250ms ease;
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-purple-300);
+  }
   &:disabled {
     pointer-events: none;
     cursor: not-allowed;

@@ -23,7 +23,14 @@
   color: var(--color-text);
   border: 1px solid var(--color-grey-300);
   border-radius: var(--radius-sm);
+  outline: none;
   padding: var(--size-4);
+  transition: border-color 250ms ease, box-shadow 250ms ease;
+  &:focus-visible {
+    border-color: var(--color-purple-500);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--color-purple-500) 20%, transparent);
+  }
 }
 
 .error {
